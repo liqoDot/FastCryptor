@@ -82,6 +82,7 @@ void decryptDirectory(const std::string& dirName)
             struct stat st;
             if (stat(fileName.c_str(), &st) == 0) {
                 if (S_ISREG(st.st_mode)) {
+                    std::cout << "Encoding: " << fileName << std::endl;
                     decryptFile(fileName);
                 } else if (S_ISDIR(st.st_mode) && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
                     decryptDirectory(fileName);
