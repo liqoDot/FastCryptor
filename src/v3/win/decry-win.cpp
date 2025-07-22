@@ -4,6 +4,7 @@
 #include <vector>
 #include <dirent.h>
 #include <cstring>
+#include <cstdio>
 #include <sys/stat.h>
 
 const std::string key = "fastcryptor_for_the_win_haha";
@@ -16,22 +17,43 @@ void decryptFile(const std::string& fileName)
         return;
     }
 
+    if (fileName.length() < 3 || fileName.substr(fileName.length() - 3) != ".fc") {
+        return;
+    }
+
     std::vector<char> data((std::istreambuf_iterator<char>(inputFile)), 
                            (std::istreambuf_iterator<char>()));
     inputFile.close();
 
-    for (int i = 0; i < data.size(); i++) {
-        data[i] ^= key[i % key.length()];
-    }
+    int totalSize = data.size();
+    int processed = 0;
 
-    std::ofstream outputFile(fileName, std::ios::binary);
+    for (int i = 0; i < totalSize; i++) {
+        data[i] ^= key[i % key.length()];
+
+        processed++;
+        int percentage = (processed * 100) / totalSize;
+
+        std::cout << "\rDecrypting " << fileName << " - " << percentage << "% complete";
+        std::cout.flush();
+    }
+    std::cout << std::endl;
+
+    std::string decryptedFileName = fileName;
+    decryptedFileName.erase(decryptedFileName.length() - 3, 3);
+
+    std::ofstream outputFile(decryptedFileName, std::ios::binary);
     if (!outputFile.is_open()) {
-        std::cerr << "Error opening file: " << fileName << std::endl;
+        std::cerr << "Error opening file: " << decryptedFileName << std::endl;
         return;
     }
 
     outputFile.write(data.data(), data.size());
     outputFile.close();
+
+    if (std::remove(fileName.c_str()) != 0) {
+        std::cerr << "Error deleting file: " << fileName << std::endl;
+    }
 }
 
 void decryptDirectory(const std::string& dirName)

