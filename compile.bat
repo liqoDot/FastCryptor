@@ -32,8 +32,8 @@ if "%version%"=="v1" (
 ) else if "%version%"=="v4" (
     echo ~~ FC4 Compiler ~~
     if exist "src\v4\encrypt.cpp" if exist "src\v4\decrypt.cpp" (
-        g++ src\v4\encrypt.cpp -o build\FC4 -std=c++11
-        g++ src\v4\decrypt.cpp -o build\FC4_DECRYPTOR -std=c++11
+        g++ src\v4\encry-win.cpp -o build\FC4 -std=c++11
+        g++ src\v4\decry-win.cpp -o build\FC4_DECRYPTOR -std=c++11
         echo Finished compiling!
     ) else (
         echo Error: File not found! Please download the source code.
