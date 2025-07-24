@@ -1,5 +1,5 @@
 @echo off
-set /p version="Enter which version to compile (v1/v2/v3/v4): "
+set /p version="Enter which version to compile (v1/v2/v3/v4/v5): "
 if not exist build mkdir build
 
 echo ~~ FC-%version% Compiler ~~
